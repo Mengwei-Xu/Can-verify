@@ -548,12 +548,12 @@ react act_F =
 # Event
 # Reduce is swallowed here and has to be added again for next agent step
 react reduce_event =
-    Reduce.Event{ps}.1
+    Reduce.Event{ps}.id
  || Plans.(PlanSet{ps}.id | id)
  -[1]->
     PlanSet{ps}.id
  || Plans.(PlanSet{ps}.id | id)
- @[0,0,1];
+ @[1,1,2];
 
 # Plan Selection
 # CheckToken can be discarded if we enumerate all components of Plan
