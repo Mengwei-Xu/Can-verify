@@ -47,4 +47,4 @@ Run [./CAN-Verify  [options] <file.can>]
 {- [-p] to tell the program the file of the properties in human language}
 }
 
-@author Thibault Rivoalen
+Author: Thibault Rivoalen

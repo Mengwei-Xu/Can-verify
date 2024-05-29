@@ -6,4 +6,4 @@ A CAN to BigraphER compiler to simplify the analysis of BDI agents written in CA
 
 The entry point is {!CAN2BigraphERCompiler}
 
-@author Thibault Rivoalen
+Author: Thibault Rivoalen

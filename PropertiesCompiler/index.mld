@@ -6,4 +6,4 @@ A PRISM Properties compiler to translate properties written in human language.
 
 The entry point is {!PropertiesCompiler}
 
-@author Thibault Rivoalen
+Author: Thibault Rivoalen
