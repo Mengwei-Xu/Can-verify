@@ -1059,15 +1059,23 @@ let make_predicates () =
   let rec scan i names decls =
     if i >= Array.length !preds then (names, decls)
     else
-      let pred_name = Array.fold_left fold_preds_name "" !preds.(i) in
+      let pred_name = Array.fold_left (fun acc el -> if acc = "" then el else acc ^ "_" ^ el) "" !preds.(i) in
+      Printf.printf "Constructing predicate name: %s\n%!" pred_name;
       let names =
         Array.append names [| Printf.sprintf "predicate_%s" pred_name |]
       in
-      let decl =
-        Printf.sprintf "B(\"%s\").(T|id)"
-          (Array.fold_left (fun acc el -> if acc = "" then el else acc ^ " | " ^ el) "" !preds.(i))
+      let belief_str =
+        Array.fold_left
+          (fun acc el ->
+            let belief = Printf.sprintf "B(\"%s\").(T | id)" el in
+            if acc = "" then belief else acc ^ " | " ^ belief)
+          ""
+          !preds.(i)
       in
-      let decl = Printf.sprintf "big predicate_%s = %s;\n" pred_name decl in
+      let belief_str = Printf.sprintf "Beliefs.(%s | id)" belief_str in
+      Printf.printf "Final belief string: %s\n%!" belief_str;
+      let decl = Printf.sprintf "big predicate_%s = %s;\n" pred_name belief_str in
+      Printf.printf "Final declaration: %s\n%!" decl;
       let decls = Array.append decls [| decl |] in
       scan (i + 1) names decls
   in
@@ -1075,6 +1083,8 @@ let make_predicates () =
   let names =
     Array.append names [| "failure"; "no_failure"; "empty_intention" |]
   in
+  Printf.printf "Generated predicates: %s\n%!" (String.concat ", " (Array.to_list names));
+  Printf.printf "Generated declarations:\n%s\n%!" (String.concat "\n" (Array.to_list decls));
   (names, decls)
 
 let fold_preds str ch =

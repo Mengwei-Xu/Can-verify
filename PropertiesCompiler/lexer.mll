@@ -8,7 +8,12 @@ rule token = parse
 | " " { token lexbuf }
 | "that" { THAT }
 | "the belief" { THE_BELIEF }
+| "the beliefs" { THE_BELIEFS }
+| '(' { LB } 
+| ')' { RB } 
+| ',' { COMMA }
 | "holds"'.'? { HOLDS }
+| "hold"'.'? { HOLD }
 | "What" { WHAT }
 | "is" { IS }
 | "eventually" { EVENTUALLY }
