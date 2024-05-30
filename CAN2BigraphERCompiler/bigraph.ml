@@ -490,15 +490,15 @@ fun react comparator_atoms_T_9(atom,pw9) =
 
 
 react check_end_T =
-    Beliefs.id || Check.1
+    Check.1
     -[1]->
-    Beliefs.id || Check.T;
+    Check.T;
 
 react check_end_F =
-    Beliefs.id || Check.id
+    Check.id
     -[1]->
-    Beliefs.id || Check.F
-    @[0] if !T in param, !F in param;
+    Check.F
+    @[] if !T in param, !F in param;
 
 
 # rules for revising compact epistemic belief base
