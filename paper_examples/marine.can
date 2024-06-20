@@ -1,0 +1,25 @@
+// Initial belief bases
+1. thruster_functional : <3, 1>, pipe_found : <0, 3>, report_sent: <0, 2>
+// External events
+inspect_pipe : 1
+// Plan library
+1 : inspect_pipe : thruster_functional <- find_pipe; survy_pipe; report_back.
+2 : find_pipe : thruster_functional <- scan_low.
+3 : find_pipe : thruster_functional <- scan_med.
+4 : find_pipe : thruster_functional <- scan_high.
+5 : survy_pipe : pipe_found <- survy_low.
+6 : survy_pipe : pipe_found <- survy_med.
+7 : survy_pipe : pipe_found <- survy_high.
+8 : report_back : thruster_functional & pipe_found <- report_low.
+9 : report_back : thruster_functional & pipe_found <- report_med.
+10 : report_back : thruster_functional & pipe_found <- report_high.
+// Actions description
+scan_low : true<- <pipe_found: {3,4}>,<pipe_found: {1,6}>
+scan_med : true<- <pipe_found: {4,6}>,<pipe_found: {0,4}>
+scan_high : true<- <pipe_found: {5,9}>,<pipe_found: {1,1}>
+survy_low : true<- <thruster_functional: {3,9}>,<thruster_functional: {7,1}>
+survy_med : true<- <thruster_functional: {1,8}>,<thruster_functional: {5,2}>
+survy_high : true<- <thruster_functional: {2,6}>,<thruster_functional: {6,4}> 
+report_low : true<- <report_sent: {3,9}>,<report_sent: {2,1}>
+report_med : true<- <report_sent: {3,8}>,<report_sent: {2,2}>
+report_high : true<- <report_sent: {3,7}>,<report_sent: {2,3}>

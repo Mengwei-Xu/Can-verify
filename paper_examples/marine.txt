@@ -1,0 +1,1 @@
+What is the maximum probability that eventually the beliefs (thruster_functional, pipe_found, report_sent) hold
