@@ -4,7 +4,7 @@
 
 ## Description
 
-This git repository is the extension of the original CANverify (in https://zenodo.org/records/8282684) to suppor the reasoning of uncertain beliefs through epistemic states. 
+This git repository is the extension of the original [CAN-verify](https://zenodo.org/records/8282684) to support the reasoning of uncertain beliefs through epistemic states. 
 
 If you have any question installing it or question, please send the email to corresponding author to mengwei.xu@newcastle.ac.uk. 
 
