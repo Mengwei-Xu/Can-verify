@@ -4,11 +4,9 @@
 
 ## Description
 
-This project is developed based on Mengwei Xu's Can verigy tool. 
+This git repository is the extension of the original CANverify (in https://zenodo.org/records/8282684) to suppor the reasoning of uncertain beliefs through epistemic states. 
 
-https://zenodo.org/records/8282684
-
-The aim of this program is to streamlined the entire underlying process of formal modelling/encoding from BDI agents in CAN language to Bigraphs, model execution in BigraphER tool, and back-end model-checker with PRISM. It was developed by Thibault Rivoalen ([thibault.rivoalen@alumni.enac.fr](mailto:thibault.rivoalen@alumni.enac.fr)) for the University of Glasgow, UK. If you have any question installing it, please also send the email to corresponding author to mengwei.xu@manchester.ac.uk. 
+If you have any question installing it or question, please send the email to corresponding author to mengwei.xu@newcastle.ac.uk. 
 
 ---
 ## Quick Start
@@ -109,96 +107,109 @@ Run ```./CAN-Verify  [options] [-p prop.txt] <file.can>```
 
 the current implementation support the input in ```prop.txt``` of the following 
 
-1. What is the maximum probability that eventually the belief ```variable``` holds
-2. What is the minimum probability that eventually the belief ```variable``` holds
+1. What is the maximum probability that eventually the belief ```predicate``` holds
+2. What is the minimum probability that eventually the belief ```predicate``` holds
+3. What is the maximum probability that eventually the belief (```predicate1```,```predicate2```, ...,```predicaten```) holds
+4. What is the minimum probability that eventually the belief (```predicate1```,```predicate2```, ...,```predicaten```) holds
 
-For example, we can have:
+The first two are for the single belief predicate whereas the last two are for the conjunction of belief predicates. 
 
-What is the maximum probability that eventually the belief report holds
-What is the minimum probability that eventually the belief report holds
-
-### Agent attribute specification: ``` [.can] ```
-1. // Initial belief bases, there is no upper limit on the number of beliefs,
-2. 1 . ```belief name variable``` : <```positive value variable```, ```negative value variable```>, ```belief name variable``` : <```positive value variable```, ```negative value variable```>, ...
-3. // External events, there is no upper limit on the number of event
-4. ```event_a name variable``` : 1, ```event_b name variable``` : 2, ```event_c name variable``` : 3, ...
-5. // Plan library, there is no upper limit on the number of plan.
-6. 1: ```plan variable``` <- ```plan body variable```
-7. 2：```plan variable``` <- ```plan body variable```
-8. ...
-9. // Actions description, there is no upper limit on the number of event
-10. ```action name variable``` : ```cond variable``` <- < ```belief name variable``` : {```positive value variable```, ```positive EffectWeight variable```}>, < ```belief name variable``` : {```negative value variable```, ```negative EffectWeight variable```}>
-11. ```action name variable``` : ```cond variable``` <- < ```belief name variable``` : {```positive value variable```, ```positive EffectWeight variable```}>, < ```belief name variable``` : {```negative value variable```, ```negative EffectWeight variable```}>
-12. ...
-
-##### Property specification note
-- the generic properties are by default included to check determining if for some/all executions an event finishes with failure or success.
-
-- the parse will complain if the exact wording is not followed.
 
 
 ### run examples
-The project provides a new example, drone.can and drone.txt. Examples are included in the folder ./paper_examples. 
+The project provides a running example, marine.can and marine.txt. 
+
+Examples are included in the folder ```paper_examples/```. 
 
 please run the command
 
 
-```./CAN-Verify -dynamic -p paper_examples/drone.txt paper_examples/drone.can```
+```./CAN-Verify -dynamic -p paper_examples/marine.txt paper_examples/marine.can```
 
 #### for a quick check
 
-- for the exmaple in drone, you should get the following
+for the exmaple in marine, you should get the following
 
-> Model checking: Pmin=? [ F ("no_failure"&(X "empty_intention")) ] ... Result: 1.0
+> Model checking: Pmin=? [ F ("no_failure"&(X "empty_intention")) ] ... Result: 0
 
-> Model checking: Pmax=? [ F ("no_failure"&(X "empty_intention")) ] ... Result: 1.0
+there mean that there is a case that the mission can fail eventually.
 
-there mean that it is always the case the task of sensing is achieved eventually.
+> Model checking: Pmax=? [ F ("no_failure"&(X "empty_intention")) ] ... Result: 0.81
 
-> Model checking: Pmin=? [ F ("failure"&(X "empty_intention")) ] ... Result: 0.0
-
-> Model checking: Pmax=? [ F ("failure"&(X "empty_intention")) ] ... Result: 0.0
-
-there means that there never exists the case the task of sensing is failed eventually.
-
-> Model checking: Pmax=? [ F ("predicate_report") ]
-
-This sentence is translated from What is the maximum probability that eventually the belief report holds
-
-> Result 0.7
-
-This means that the maximum probability that eventually the belief report holds is 70%
-
-> Model checking: Pmin=? [ F ("predicate_report") ]
-
-This sentence is translated from What is the minimum probability that eventually the belief report holds
-
-> Result 0.7
-
-This means that the minimum probability that eventually the belief report holds is 70%
+there mean that the maximum probability that the mission can succeed eventually is 0.81.
 
 
-### Built with Docker
+> Model checking: 
 
-Make sure the current path is in the extracted zip fold.
+> Pmax=? [ F ("predicate_thruster_functional" & "predicate_pipe_found" & "predicate_report_sent") ];
 
-Run ```sudo make docker``` to have a ```can-verify``` Docker image built for you. 
+This property asks what is the maximum probability that eventually the conjunction of these beliefs hold
 
-
-#### Usage 
-
-Instead of running ```./CAN-Verify  [options] [-p prop.txt] <file.can>```, in docker setting, please run 
+> Result 0.73
 
 
-```sudo docker run --rm --volume "${PWD}":/test_rep --interactive can-verify [options] [-p prop.txt] <file.can>```.
 
-For example to run the example in listing 1.4, you can run
 
-```sudo docker run --rm --volume "${PWD}":/test_rep --interactive can-verify -dynamic -p paper_examples/Listing_1-4.txt paper_examples/Listing_1-4.can```
 
+### Advance usage for strategy synthesis (which is not currently supported for full automation)
+We use the running example of submarine to illustrate how to do it
+
+#### Step 1
+
+use CAN-Verify to translate the CAN+ file to Bigraph model
+
+```./CAN-Verify -big paper_examples/marine.can```
+
+#### Step 2
+
+add the relevant bigraph labellings to generated ```marine_1.big``` file in ```paper_examples/``` folder.
+
+
+```
+big predicate_thruster_functional = B("thruster_functional").(T | id);
+big predicate_pipe_found = B("pipe_found").(T | id);
+big predicate_report_sent = B("report_sent").(T | id);
+```
+
+after 
+```
+big failure = Intent.(ReduceF | id);
+big no_failure = Intent.(Nil | id);
+big empty_intention = Intentions.1;
+```
+
+Change 
+
+```preds = {failure, no_failure, empty_intention};```
+
+to
+
+
+```preds = {failure, no_failure, empty_intention, predicate_thruster_functional, predicate_pipe_found, predicate_report_sent};```
+
+#### Step 3
+
+navigate the ```paper_examples/``` folder and run the command to generate the labelled transition system
+
+```bigrapher full -p marine.tra -l marine.csl --solver=MCARD marine_1.big```
+
+and add the following to ```marine.csl``` file
+```
+Pmin=? [ F ("no_failure"&(X "empty_intention")) ];
+Pmax=? [ F ("no_failure"&(X "empty_intention")) ];
+Pmin=? [ F ("failure"&(X "empty_intention")) ];
+Pmax=? [ F ("failure"&(X "empty_intention")) ];
+Pmax=? [ F ("predicate_thruster_functional" & "predicate_pipe_found" & "predicate_report_sent") ];
+```
+#### Step 4
+
+run the command 
+
+```
+prism -importtrans marine.tra marine.csl -pf 'Pmax=? [ F ("predicate_thruster_functional"&"predicate_pipe_found"&"predicate_report_sent")]' -exportadvmdp adv.tra
+```
+The returned ```adv.tra``` is the strategy mapping the state to the actions. 
 
 
 ## Copyright and license
-Copyright 2012-2022 Glasgow Bigraph Team  
-All rights reserved. Tools distributed under the terms of the Simplified BSD License that can be found in the [LICENSE file](LICENSE.md).Copyright 2012-2022 Glasgow Bigraph Team  
 All rights reserved. Tools distributed under the terms of the Simplified BSD License that can be found in the [LICENSE file](LICENSE.md).
