@@ -1,8 +1,8 @@
-# Reproduction Instructioon
+# Reproduction Instruction
 ---
 
 ## Description
-This is the manual to reproduce the scalability experiments for SCP special issue in Advances in Formal Methods for Autonomous Systems.
+This is the manual to reproduce the scalability experiments for SCP special issue submission, entitled **Modelling and Verifying BDI Agents under Uncertainty**, in Advances in Formal Methods for Autonomous Systems.
 
 As we have made clear that the complexity comes from the construction of the transition systems in Bigraph level, the experiments are done directly in the Bigraph level. That said, to reproduce the experiments, there is no requirement on the knowledge of the bigraph per se other than following a serial command line instructions which we will give now. 
 
